@@ -1,0 +1,47 @@
+{
+  "name": "react-express-base",
+  "version": "1.0.0",
+  "description": "MERN",
+  "main": "serverjs",
+  "scripts": {
+    "test": "mocha",
+    "test-watch": "nodemon --exec \"npm run test\"",
+    "client": "cd client && npm start",
+    "server": "nodemon --ignore client/ server.js",
+    "start": "concurrently \"npm run client\" \"npm run server\"",
+    "build": "cd client && npm run build"
+  },
+  "keywords": [
+    "express",
+    "react",
+    "nodejs",
+    "mongodb",
+    "fullstack",
+    "javascript"
+  ],
+  "author": "German Hernandez del Rosario",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^1.0.2",
+    "body-parser": "^1.17.2",
+    "compression": "^1.6.2",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.3",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.3",
+    "express-group-routes": "^1.1.0",
+    "helmet": "^3.6.1",
+    "jsonwebtoken": "^7.4.1",
+    "method-override": "^2.3.9",
+    "mongoose": "^4.10.4",
+    "mongoose-timestamps": "0.0.1",
+    "mongoose-unique-validator": "^1.0.5",
+    "morgan": "^1.8.2",
+    "validator": "^7.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^3.4.0",
+    "mocha": "^3.4.2",
+    "nodemon": "^1.11.0"
+  }
+}
