@@ -1,4 +1,4 @@
-const express = require('express');
+import express from 'express';
 const path = require('path');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
