@@ -1,11 +1,30 @@
 const User = require('../models/users');
 
-exports.profile = (req, res, next) => {
-  User
-    .findById(req.user._id)
-    .exec((err, user) => {
-      if (err) return next(err);
+/**
+ * Get profile of current user
+ * @return {Object}    User profile
+ */
+exports.profile = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+    res.status(200).send(user);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+};
 
-      res.status(200).send(user);
-    });
+/**
+ * Logout current user removing active auth token
+ * @return {Object}    Message
+ */
+exports.logout = async (req, res) => {
+  try {
+    const token = req.token;
+    const user = await User.findById(req.user._id).select('+tokens');
+    await user.update({ $pull: { tokens: { token } } });
+
+    res.status(200).json({ message: 'User successfully logged out' });
+  } catch (e) {
+    res.status(400).send(e);
+  }
 };

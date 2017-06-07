@@ -14,3 +14,18 @@ export const profile = (callback) => {
       return callback(err);
     });
 };
+
+/**
+ * Logout user
+ * @param  {Function} callback Callback function
+ * @return {Object}            Message
+ */
+export const logout = (callback) => {
+  axios.get('/users/logout')
+    .then((response) => {
+      callback(null, response.data);
+    })
+    .catch((err) => {
+      return callback(err);
+    });
+};

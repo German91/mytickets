@@ -22,7 +22,7 @@ class LoginPage extends React.Component {
 
     login({ email, password }, (err, token) => {
       if (err) {
-        this.setState({ error: err });
+        this.setState({ error: err.response.data });
       }
     });
   }

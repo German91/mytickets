@@ -7,14 +7,15 @@ const jwt = require('jsonwebtoken');
  * @param  {Function} callback Callback function
  * @return {Object}            Token's information
  */
-exports.generateAuthToken = (payload, callback) => {
-  const access = 'auth';
+exports.generateAuthToken = async (payload) => {
+  try {
+    const access = 'auth';
+    const token = await jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' });
 
-  jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' }, (err, token) => {
-    if (err) return callback(err);
-
-    callback(null, { access, token });
-  });
+    return { access, token };
+  } catch (e) {
+    return e;
+  }
 };
 
 /**
@@ -23,10 +24,12 @@ exports.generateAuthToken = (payload, callback) => {
  * @param  {Function} callback Callback function
  * @return {Object}            Token decoded
  */
-exports.decodeToken = (token, callback) => {
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) return callback(err);
+exports.decodeToken = async (token) => {
+  try {
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET);
 
-    callback(null, decoded);
-  });
+    return decoded;
+  } catch (e) {
+    return e;
+  }  
 };

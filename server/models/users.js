@@ -59,30 +59,13 @@ let UserSchema = new Schema({
 UserSchema.plugin(timestamps);
 UserSchema.plugin(uniqueValidator);
 
-UserSchema.methods.generateAuthToken = function (callback) {
-  let user = this;
-  let payload = { _id: user._id, roles: user.roles };
-  
-  generateAuthToken(payload, (err, token) => {
-    if (err) return callback(err);
-
-    user.update({
-      $push: { tokens: token },
-    }, (err) => {
-      if (err) return callback(err);
-
-      callback(null, token.token);
-    });
-  });
-};
-
-UserSchema.methods.comparePassword = function (plainPassword, callback) {
+UserSchema.methods.comparePassword = function (plainPassword) {
   let user = this;
 
   comparePassword(plainPassword, user.password, (err, isMatch) => {
-    if (err) return callback(err);
+    if (err) return err;
 
-    callback(null, isMatch);
+    return isMatch;
   });
 };
 

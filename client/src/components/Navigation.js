@@ -5,6 +5,7 @@ import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 import { Link } from 'react-router';
 
 import Auth from '../utils/Auth';
+import { logout } from '../api/userApi';
 
 class Navigation extends React.Component {
   constructor(props) {
@@ -14,7 +15,13 @@ class Navigation extends React.Component {
   }
 
   handleLogout() {
-    Auth.destroyToken();
+    logout((err, done) => {
+      if (err) {
+        console.log(err);
+      } else {
+        Auth.destroyToken();
+      }
+    });
   }
 
   render() {

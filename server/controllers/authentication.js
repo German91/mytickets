@@ -1,60 +1,41 @@
 const User = require('../models/users');
+const { generateAuthToken } = require('../services/tokens');
 
-exports.signup = (req, res, next) => {
-  const data = req.body || {};
+/**
+ * Create new account
+ * @param  {String}  email     User email
+ * @param  {String}  password  User password
+ * @param  {String}  username  User username
+ * @return {Object}            Message
+ */
+exports.signup = async (req, res) => {
+  try {
+    const data = req.body || {};
 
-  // Check params
-  if (!data.username) return res.status(400).send('Username is required');
-  if (!data.email) return res.status(400).send('Email address is required');
-  if (!data.password) return res.status(400).send('Password is required');
-
-  User
-    .findOne({ email: data.email })
-    .exec((err, exists) => {
-      if (err) return next(err);
-
-      if (exists) return res.status(500).send('Account already exists');
-
-      let user = new User(data);
-
-      user.save()
-        .then((response) => {
-          res.status(200).json({ message: 'Account successfully created' });
-        })
-        .catch((err) => {
-          res.status(500).send(err);
-        });
-    });
+    const user = new User(data);
+    await user.save();
+    res.status(200).json({ message: 'Account successfully created' });
+  } catch (e) {
+    res.status(400).send(e);
+  }
 };
 
-exports.login = (req, res, next) => {
-  const data = req.body || {};
+/**
+ * Login user
+ * @param  {String}   email     [description]
+ * @param  {String}   password  [description]
+ * @return {Object}             Message and auth token
+ */
+exports.login = async (req, res) => {
+  try {
+    const data = req.body || {};
 
-  // Check params
-  if (!data.email) return res.status(400).send('Email is required');
-  if (!data.password) return res.status(400).send('Password is required');
+    const user = await User.findOne({ email: data.email }).select('+password');
+    await user.comparePassword(data.password);
+    const token = await generateAuthToken({ _id: user._id, roles: user.roles });
 
-  // Check if it exists
-  User
-    .findOne({ email: data.email })
-    .select('+password')
-    .exec((err, user) => {
-      if (err) return next(err);
-
-      if (!user) return res.status(500).send('Email or password is incorrect');
-
-      // Check if the password matchs
-      user.comparePassword(data.password, (err, isMatch) => {
-        if (err) return next(err);
-
-        if (!isMatch) return res.status(500).send('Email or password is incorrect');
-
-        // Generate an auth token for current user
-        user.generateAuthToken((err, token) => {
-          if (err) return next(err);
-
-          res.header('Authorization', token).status(200).json({ message: 'Successfully logged', token });
-        });
-      });
-    });
+    res.header('Authorization', token).status(200).json({ message: 'Successfully logged', token: token.token });
+  } catch (e) {
+    res.status(400).send(e);
+  }
 };
