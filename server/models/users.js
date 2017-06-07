@@ -4,7 +4,8 @@ const uniqueValidator = require('mongoose-unique-validator');
 const validator = require('validator');
 
 const Schema = mongoose.Schema;
-const { generatePassword } = require('../services/passwords');
+const { generatePassword, comparePassword} = require('../services/passwords');
+const { generateAuthToken } = require('../services/tokens');
 
 let UserSchema = new Schema({
   username: {
@@ -57,6 +58,33 @@ let UserSchema = new Schema({
 
 UserSchema.plugin(timestamps);
 UserSchema.plugin(uniqueValidator);
+
+UserSchema.methods.generateAuthToken = function (callback) {
+  let user = this;
+  let payload = { _id: user._id, roles: user.roles };
+  
+  generateAuthToken(payload, (err, token) => {
+    if (err) return callback(err);
+
+    user.update({
+      $push: { tokens: token },
+    }, (err) => {
+      if (err) return callback(err);
+
+      callback(null, token.token);
+    });
+  });
+};
+
+UserSchema.methods.comparePassword = function (plainPassword, callback) {
+  let user = this;
+
+  comparePassword(plainPassword, user.password, (err, isMatch) => {
+    if (err) return callback(err);
+
+    callback(null, isMatch);
+  });
+};
 
 UserSchema.pre('save', function (next) {
   let user = this;

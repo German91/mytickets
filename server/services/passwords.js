@@ -17,3 +17,18 @@ exports.generatePassword = (plainPassword, callback) => {
     });
   });
 };
+
+/**
+ * Compare plain password with hashed passowrd
+ * @param  {String}   plainPassword User's plain password
+ * @param  {String}   hashPassword  Current user password
+ * @param  {Function} callback      Callback function
+ * @return {Boolean}                If password matchs
+ */
+exports.comparePassword = (plainPassword, hashPassword, callback) => {
+  bcrypt.compare(plainPassword, hashPassword, (err, isMatch) => {
+    if (err) return callback(err);
+
+    callback(null, isMatch);
+  });
+};

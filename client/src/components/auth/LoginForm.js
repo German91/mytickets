@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
 
-const SignupPage = ({handleSubmit}) => (
+const LoginForm = ({handleSubmit}) => (
   <form onSubmit={ handleSubmit }>
     <FormGroup controlId="email">
       <ControlLabel>Email Address</ControlLabel>
@@ -14,19 +14,14 @@ const SignupPage = ({handleSubmit}) => (
       <FormControl id="password" type="password" placeholder="Password" />
     </FormGroup>
 
-    <FormGroup controlId="username">
-      <ControlLabel>Username</ControlLabel>
-      <FormControl id="username" type="username" placeholder="Username" />
-    </FormGroup>
-
     <FormGroup>
-      <Button type="submit" bsStyle="primary">Sign Up</Button>
+      <Button type="submit" bsStyle="primary">Login</Button>
     </FormGroup>
   </form>
 );
 
-SignupPage.propTypes = {
+LoginForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired
 };
 
-export default SignupPage;
+export default LoginForm;

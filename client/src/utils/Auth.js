@@ -16,8 +16,9 @@ class Auth {
     return token;
   }
 
-  static destroyToken() {
+  static destroyToken(callback) {
     window.localStorage.removeItem('token');
+    browserHistory.push('/');
   }
 
   static getToken() {

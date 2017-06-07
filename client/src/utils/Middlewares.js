@@ -1,9 +1,14 @@
+import Auth from './Auth';
+
 class Middlewares {
 
-  static isLogged(replace, nextState) {
-    replace({
-      
-    });
+  static isLogged(nextState, replace) {
+    if (!Auth.isAuthenticated()) {
+      replace({
+        pathname: '/',
+        state: { nextPathname: nextState.location.pathname }
+      });
+    } 
   }
 
 }

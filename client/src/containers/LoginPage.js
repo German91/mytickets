@@ -2,10 +2,10 @@ import React from 'react';
 import { Row, Col, Alert } from 'react-bootstrap';
 import { Link } from 'react-router';
 
-import SignupForm from '../components/auth/SignupForm';
-import { signup } from '../api/authApi';
+import LoginForm from '../components/auth/LoginForm';
+import { login } from '../api/authApi';
 
-class SignupPage extends React.Component {
+class LoginPage extends React.Component {
   constructor(props) {
     super(props);
 
@@ -19,9 +19,8 @@ class SignupPage extends React.Component {
 
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    const username = document.getElementById('username').value;
 
-    signup({ email, password, username }, (err) => {
+    login({ email, password }, (err, token) => {
       if (err) {
         this.setState({ error: err });
       }
@@ -32,15 +31,15 @@ class SignupPage extends React.Component {
     return (
       <Row>
         <Col xs={12} sm={6} smOffset={3}>
-          <h1 className="text-center">Sign Up</h1>
+          <h1 className="text-center">Login</h1>
           <hr/>
 
           { this.state.error && <Alert bsStyle="danger">{ this.state.error }</Alert> }
 
-          <SignupForm handleSubmit={ this.handleSubmit } />
+          <LoginForm handleSubmit={ this.handleSubmit } />
 
           <div className="text-center">
-            <Link to="/">Back to Login</Link>
+            <Link to="/signup">Create an account</Link>
           </div>
         </Col>
       </Row>
@@ -48,4 +47,4 @@ class SignupPage extends React.Component {
   }
 }
 
-export default SignupPage;
+export default LoginPage;
