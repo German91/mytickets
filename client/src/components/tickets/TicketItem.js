@@ -1,25 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Panel } from 'react-bootstrap';
+import { Panel, Button, ButtonToolbar } from 'react-bootstrap';
 
 class TicketItem extends React.Component {
   renderStatus() {
     const status = this.props.ticket.status;
+    let style = 'danger';
 
-    switch (status) {
-      case 'open':
-        return 'success';
-        break;
-      case 'review':
-        return 'warning';
-        break;
-      default:
-        return 'danger';
-    }
+    if (status === 'open') style = 'success';
+    if (status === 'review') style = 'warning';
+
+    return style;
   }
 
+
   render() {
-    const { title, description, _owner, status } = this.props.ticket;
+    const { _id, title, description, _owner, status } = this.props.ticket;
     const statusStyle = `label label-${this.renderStatus()}`;
 
     return (
@@ -30,6 +26,12 @@ class TicketItem extends React.Component {
         <hr/>
 
         <p>{ description }</p>
+
+        <hr/>
+        <ButtonToolbar>
+          <Button bsStyle="warning">Update</Button>
+          <Button bsStyle="danger" onClick={ () => this.props.handleRemove(_id) }>Remove</Button>
+        </ButtonToolbar>
       </Panel>
     );
   }
@@ -37,6 +39,7 @@ class TicketItem extends React.Component {
 
 TicketItem.propTypes = {
   ticket: PropTypes.object.isRequired,
+  handleRemove: PropTypes.func.isRequired,
 };
 
 export default TicketItem;

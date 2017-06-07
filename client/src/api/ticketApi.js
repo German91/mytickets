@@ -29,3 +29,19 @@ export const addTicket = (payload, callback) => {
       return callback(err);
     });
 };
+
+/**
+ * Remove ticket
+ * @param  {String}   id       Ticket's id
+ * @param  {Function} callback Callback function
+ * @return {Object}            Message
+ */
+export const removeTicket = (id, callback) => {
+  axios.delete(`/tickets/${id}`)
+    .then((response) => {
+      callback(null, response.data);
+    })
+    .catch((err) => {
+      return callback(err);
+    });
+};

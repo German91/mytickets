@@ -28,7 +28,17 @@ exports.update = (req, res, next) => {
 };
 
 exports.remove = (req, res, next) => {
+  const _id = req.params.id;
 
+  if (!_id) return res.status(400).send('Ticket is required');
+
+  Ticket
+    .findByIdAndRemove(_id)
+    .exec((err, done) => {
+      if (err) return next(err);
+
+      res.status(200).json({ message: 'Ticket successfully removed' });
+    });
 };
 
 exports.getAll = (req, res, next) => {

@@ -2,7 +2,7 @@ import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 import FlipMove from 'react-flip-move';
 
-import { getTickets } from '../api/ticketApi';
+import { getTickets, removeTicket } from '../api/ticketApi';
 import TicketItem from '../components/tickets/TicketItem';
 
 class TicketsPage extends React.Component {
@@ -10,6 +10,8 @@ class TicketsPage extends React.Component {
     super(props);
 
     this.state = { tickets: [] };
+
+    this.handleRemove = this.handleRemove.bind(this);
   }
 
   componentDidMount() {
@@ -17,8 +19,28 @@ class TicketsPage extends React.Component {
       if (err) {
         console.log(err);
       } else {
-        console.log(tickets);
         this.setState({ tickets });
+      }
+    });
+  }
+
+  handleRemove(id) {
+    removeTicket(id, (err, response) => {
+      if (err) {
+        console.log(err);
+      } else {
+        let index = 0;
+        const tickets = this.state.tickets;
+
+        for (let i in tickets) {
+          if (tickets[i]._id === id) index = i;
+        }
+
+        if (index > -1) {
+          tickets.splice(index, 1);
+
+          this.setState({ tickets });
+        }
       }
     });
   }
@@ -26,7 +48,7 @@ class TicketsPage extends React.Component {
   renderTickets() {
     if (this.state.tickets.length) {
       return this.state.tickets.map((ticket, index) => {
-        return <TicketItem key={ index } ticket={ ticket } />
+        return <TicketItem key={ index } ticket={ ticket } handleRemove={ this.handleRemove } />
       });
     }
   }
