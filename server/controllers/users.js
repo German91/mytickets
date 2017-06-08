@@ -15,7 +15,7 @@ exports.profile = async (req, res, next) => {
 
 /**
  * Logout current user removing active auth token
- * @return {Object}    Message
+ * @return {String}    Message
  */
 exports.logout = async (req, res) => {
   try {
@@ -23,7 +23,7 @@ exports.logout = async (req, res) => {
     const user = await User.findById(req.user._id).select('+tokens');
     await user.update({ $pull: { tokens: { token } } });
 
-    res.status(200).json({ message: 'User successfully logged out' });
+    res.status(200).send('User successfully logged out');
   } catch (e) {
     res.status(400).send(e);
   }

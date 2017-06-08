@@ -6,7 +6,7 @@ const { generateAuthToken } = require('../services/tokens');
  * @param  {String}  email     User email
  * @param  {String}  password  User password
  * @param  {String}  username  User username
- * @return {Object}            Message
+ * @return {String}            Message
  */
 exports.signup = async (req, res) => {
   try {
@@ -14,7 +14,7 @@ exports.signup = async (req, res) => {
 
     const user = new User(data);
     await user.save();
-    res.status(200).json({ message: 'Account successfully created' });
+    res.status(200).send('Account successfully created');
   } catch (e) {
     res.status(400).send(e);
   }
