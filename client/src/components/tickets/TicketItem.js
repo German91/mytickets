@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Panel, Button, ButtonToolbar } from 'react-bootstrap';
+import { Link } from 'react-router';
 
 class TicketItem extends React.Component {
   renderStatus() {
@@ -17,6 +18,7 @@ class TicketItem extends React.Component {
   render() {
     const { _id, title, description, _owner, status } = this.props.ticket;
     const statusStyle = `label label-${this.renderStatus()}`;
+    const url = `/tickets/${ _id }/update`;
 
     return (
       <Panel header={ _owner.username } bsStyle="primary">
@@ -29,7 +31,7 @@ class TicketItem extends React.Component {
 
         <hr/>
         <ButtonToolbar>
-          <Button bsStyle="warning">Update</Button>
+          <Link to={ url } className="btn btn-warning">Update</Link>
           <Button bsStyle="danger" onClick={ () => this.props.handleRemove(_id) }>Remove</Button>
         </ButtonToolbar>
       </Panel>

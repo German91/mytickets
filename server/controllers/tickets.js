@@ -14,13 +14,36 @@ exports.create = async (req, res) => {
     await ticket.save();
     res.status(200).json({ message: 'Ticket successfully created', ticket });
   } catch (e) {
-    console.log(e);
     res.status(400).send(e);
   }
 };
 
-exports.update = (req, res, next) => {
+/**
+ * Update Ticket
+ * @param  {String}   _id  Ticket id
+ * @param  {String}   title  Ticket title
+ * @param  {String}   description Ticket description
+ * @param  {String}   status Ticket status
+ * @return {String}   Message
+ */
+exports.update = async (req, res, next) => {
+  try {
+    const _id = req.params.id;
+    const data = req.body || {};
 
+    const ticket = await Ticket.findOne({ _id, _owner: req.user._id });
+    await Ticket.update(_id, {
+      $set: {
+        title: data.title || ticket.title,
+        description: data.description || ticket.description,
+        status: data.status || ticket.status,
+      }
+    });
+
+    res.status(200).send('Ticket successfully updated');
+  } catch (e) {
+    res.status(400).send(e);
+  }
 };
 
 /**
@@ -45,15 +68,27 @@ exports.remove = async (req, res, next) => {
  */
 exports.getAll = async (req, res, next) => {
   try {
-    const tickets = await Ticket.find({ owner: req.user._id }).populate('_owner', 'username');
+    const tickets = await Ticket.find({ _owner: req.user._id }).populate('_owner', 'username');
     res.status(200).send(tickets);
   } catch (e) {
     res.status(400).send(e);
   }
 };
 
-exports.getOne = (req, res, next) => {
+/**
+ * Get Ticket By Id
+ * @param  {String}   _id  Ticket id
+ * @return {Object}       Ticket
+ */
+exports.getOne = async (req, res, next) => {
+  try {
+    const _id = req.params.id;
 
+    const ticket = await Ticket.findById(_id).populate('_owner', 'username');
+    res.status(200).send(ticket);
+  } catch (e) {
+    res.status(400).send(e);
+  }
 };
 
 exports.search = (req, res, next) => {

@@ -31,5 +31,5 @@ exports.decodeToken = async (token) => {
     return decoded;
   } catch (e) {
     return e;
-  }  
+  }
 };

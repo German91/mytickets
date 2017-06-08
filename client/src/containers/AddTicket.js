@@ -9,7 +9,7 @@ class AddTicket extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { error: '' };
+    this.state = { errors: {} };
 
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -22,7 +22,7 @@ class AddTicket extends React.Component {
 
     addTicket({ title, description }, (err, response) => {
       if (err) {
-        this.setState({ error: err });
+        this.setState({ errors: err.response.data.errors });
       } else {
         browserHistory.push('/dashboard');
       }
@@ -37,7 +37,7 @@ class AddTicket extends React.Component {
           <hr/>
 
           { this.state.error && <Alert bsStyle="danger">{ this.state.error }</Alert> }
-          <NewTicket handleSubmit={ this.handleSubmit } />
+          <NewTicket handleSubmit={ this.handleSubmit } errors={ this.state.errors } />
         </Col>
       </Row>
     );

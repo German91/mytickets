@@ -31,6 +31,39 @@ export const addTicket = (payload, callback) => {
 };
 
 /**
+ * Get Ticket By Id
+ * @param  {String}   id       Ticket id
+ * @param  {Function} callback Function callback
+ * @return {Object}            Ticket
+ */
+export const viewTicket = (id, callback) => {
+  axios.get(`/tickets/${id}`)
+    .then((response) => {
+      callback(null, response.data);
+    })
+    .catch((err) => {
+      return callback(err);
+    });
+};
+
+/**
+ * Update Ticket
+ * @param  {String}   id       Ticket id
+ * @param  {Object}   payload  Ticket information
+ * @param  {Function} callback Callback function
+ * @return {String}            Message
+ */
+export const updateTicket = (id, payload, callback) => {
+  axios.put(`/tickets/${id}`, payload)
+    .then((response) => {
+      callback(null, response.data);
+    })
+    .catch((err) => {
+      return callback(err);
+    });
+};
+
+/**
  * Remove ticket
  * @param  {String}   id       Ticket's id
  * @param  {Function} callback Callback function
