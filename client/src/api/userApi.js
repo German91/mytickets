@@ -29,3 +29,18 @@ export const logout = (callback) => {
       return callback(err);
     });
 };
+
+/**
+ * Get all users
+ * @param  {Function} callback Callback function
+ * @return {[Object]}          Users
+ */
+export const getUsers = (callback) => {
+  axios.get('/users')
+    .then((response) => {
+      callback(null, response);
+    })
+    .catch((err) => {
+      return callback(err);
+    });
+};

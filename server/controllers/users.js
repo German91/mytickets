@@ -28,3 +28,17 @@ exports.logout = async (req, res) => {
     res.status(400).send(e);
   }
 };
+
+/**
+ * Get all users
+ * @return {[Object]}     users
+ */
+exports.getAll = async (req, res) => {
+  try {
+    const users = await User.find();
+
+    res.status(200).send(users);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+};

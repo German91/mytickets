@@ -25,7 +25,7 @@ class Navigation extends React.Component {
   }
 
   render() {
-    const { username } = this.props.profile;
+    const { username, roles } = this.props.profile;
 
     return (
       <Navbar>
@@ -47,6 +47,12 @@ class Navigation extends React.Component {
           </Nav>
 
           <Nav pullRight>
+            { roles === 'admin' &&
+              <LinkContainer to="/admin">
+                 <NavItem eventKey={4}>Admin Panel</NavItem>
+              </LinkContainer>
+            }
+
             <NavDropdown eventKey={3} title={ username || '' } id="profile-dropdown">
               <MenuItem eventKey={3.1} onClick={ this.handleLogout }>Logout</MenuItem>
             </NavDropdown>

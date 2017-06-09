@@ -27,18 +27,11 @@ exports.create = async (req, res) => {
  * @return {String}   Message
  */
 exports.update = async (req, res, next) => {
-  try {
-    const _id = req.params.id;
-    const data = req.body || {};
+  const _id = req.params.id;
+  const data = req.body || {};
 
-    const ticket = await Ticket.findOne({ _id, _owner: req.user._id });
-    await Ticket.update(_id, {
-      $set: {
-        title: data.title || ticket.title,
-        description: data.description || ticket.description,
-        status: data.status || ticket.status,
-      }
-    });
+  try {
+    await Ticket.findOneAndUpdate({ _id, _owner: req.user._id }, { $set: data });
 
     res.status(200).send('Ticket successfully updated');
   } catch (e) {
@@ -52,9 +45,9 @@ exports.update = async (req, res, next) => {
  * @return {String}    Message
  */
 exports.remove = async (req, res, next) => {
-  try {
-    const _id = req.params.id;
+  const _id = req.params.id;
 
+  try {
     await Ticket.findByIdAndRemove(_id);
     res.status(200).send('Ticket successfully removed');
   } catch (e) {
@@ -91,6 +84,27 @@ exports.getOne = async (req, res, next) => {
   }
 };
 
-exports.search = (req, res, next) => {
+/**
+ * Search tickets by any term
+ * @param  {String}   search Term
+ * @return {[Object]}        Tickets
+ */
+exports.search = async (req, res, next) => {
+  const search = req.params.search;
 
+  try {
+    const tickets = await Ticket.find({
+      _owner: req.user._id,
+      $or: [
+        { title: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+        { status: { $regex: search, $options: 'i' } },
+      ]
+    })
+    .populate('_owner', 'username');
+
+    res.status(200).send(tickets);
+  } catch (e) {
+    res.status(400).send(e);
+  }
 };

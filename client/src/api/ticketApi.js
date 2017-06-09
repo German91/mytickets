@@ -78,3 +78,18 @@ export const removeTicket = (id, callback) => {
       return callback(err);
     });
 };
+
+/**
+ * Search tickets by term
+ * @param  {String} search search term
+ * @return {[Object]}      Tickets
+ */
+export const searchTickets = (search, callback) => {
+  axios.get(`/tickets/search/${search}`)
+    .then((response) => {
+      callback(null, response.data);
+    })
+    .catch((err) => {
+      return callback(err);
+    });
+};

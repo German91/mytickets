@@ -2,8 +2,9 @@ import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 import FlipMove from 'react-flip-move';
 
-import { getTickets, removeTicket } from '../api/ticketApi';
+import { getTickets, removeTicket, searchTickets } from '../api/ticketApi';
 import TicketItem from '../components/tickets/TicketItem';
+import SearchBar from '../components/SearchBar';
 
 class TicketsPage extends React.Component {
   constructor(props) {
@@ -12,6 +13,7 @@ class TicketsPage extends React.Component {
     this.state = { tickets: [] };
 
     this.handleRemove = this.handleRemove.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
@@ -45,6 +47,26 @@ class TicketsPage extends React.Component {
     });
   }
 
+  handleChange(e) {
+    if (e.target.value) {
+      searchTickets(e.target.value, (err, response) => {
+        if (err) {
+          console.log(err);
+        } else {
+          this.setState({ tickets: response });
+        }
+      });
+    } else {
+      getTickets((err, tickets) => {
+        if (err) {
+          console.log(err);
+        } else {
+          this.setState({ tickets });
+        }
+      });
+    }
+  }
+
   renderTickets() {
     if (this.state.tickets.length) {
       return this.state.tickets.map((ticket, index) => {
@@ -56,6 +78,12 @@ class TicketsPage extends React.Component {
   render() {
     return (
       <div>
+        <Row>
+          <Col xs={12} sm={6} smOffset={3}>
+            <SearchBar handleChange={ this.handleChange } />
+          </Col>
+        </Row>
+
         <Row>
           <Col xs={12} sm={4}>
             <h1>My Tickets</h1>

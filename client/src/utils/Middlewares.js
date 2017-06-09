@@ -1,4 +1,5 @@
 import Auth from './Auth';
+import { profile } from '../api/userApi';
 
 class Middlewares {
 
@@ -8,7 +9,25 @@ class Middlewares {
         pathname: '/',
         state: { nextPathname: nextState.location.pathname }
       });
-    } 
+    }
+  }
+
+  static isAdmin (nextState, replace) {
+    profile((err, response) => {
+      if (err) {
+        replace({
+          pathname: '/',
+          state: { nextPathname: nextState.location.pathname }
+        });
+      } else {
+        if (response.roles !== 'admin') {
+          replace({
+            pathname: '/',
+            state: { nextPathname: nextState.location.pathname }
+          });
+        }
+      }
+    });
   }
 
 }

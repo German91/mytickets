@@ -1,7 +1,9 @@
 import React from 'react';
 import { Row, Col } from 'react-bootstrap';
+import Alert from 'react-s-alert';
 
-import { viewTicket } from '../api/ticketApi';
+import { viewTicket, updateTicket } from '../api/ticketApi';
+import EditTicket from '../components/tickets/EditTicket';
 
 class UpdateTicket extends React.Component {
   constructor(props) {
@@ -9,8 +11,7 @@ class UpdateTicket extends React.Component {
 
     this.state = {
       id: '',
-      error: '',
-      ticket: {},
+      errors: {},
       ticket: {
         title: '',
         description: '',
@@ -19,6 +20,7 @@ class UpdateTicket extends React.Component {
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentWillMount() {
@@ -29,9 +31,14 @@ class UpdateTicket extends React.Component {
     viewTicket(this.state.id, (err, ticket) => {
       if (err) {
         console.log(err);
-        this.setState({ error: err });
       } else {
-        this.setState({ ticket });
+        const ticketFields = {
+          title: ticket.title,
+          description: ticket.description,
+          status: ticket.status,
+        };
+
+        this.setState({ ticket: ticketFields });
       }
     });
   }
@@ -39,13 +46,25 @@ class UpdateTicket extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
 
+    const id = this.state.id;
     const title = this.state.ticket.title;
     const description = this.state.ticket.description;
     const status = this.state.ticket.status;
 
-    console.log(title);
-    console.log(description);
-    console.log(status);
+    updateTicket(id, { title, description, status }, (err, response) => {
+      if (err) {
+        this.setState({ errors: err.response.data.errors });
+      } else {
+        Alert.success(response, { position: 'top-right', effect: 'slide', timeout: 5000 });
+      }
+    });
+  }
+
+  handleChange(e) {
+    let ticket = this.state.ticket;
+    ticket[e.target.id] = e.target.value;
+
+    this.setState({ ticket });
   }
 
   render() {
@@ -55,6 +74,11 @@ class UpdateTicket extends React.Component {
           <h1>Update Ticket</h1>
           <hr/>
 
+          <EditTicket
+            ticket={ this.state.ticket }
+            errors={ this.state.errors }
+            handleSubmit={ this.handleSubmit }
+            handleChange={ this.handleChange } />
         </Col>
       </Row>
     );

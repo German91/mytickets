@@ -1,8 +1,9 @@
 const { decodeToken } = require('../services/tokens');
 
 const isLogged = async (req, res, next) => {
+  const token = req.header('Authorization');
+  
   try {
-    const token = req.header('Authorization');
     const decoded = await decodeToken(token);
 
     if (!decoded._id) throw new Error(decoded);
